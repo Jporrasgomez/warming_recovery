@@ -97,9 +97,9 @@ variables <-
 
 # Charging functions
 source("code/functions/eff_size_LRR_function.R")      # Function of LRR at aggregated level
-source("code/functions/new_dynamics.R")               # Function of LRR at dynamics level
-source("code/functions/gg_aggregated_function_2.R")   # Function for visualization of aggregated analysis
-source("code/functions/gg_dynamics_function2.R")      # Function for visualization of dynamics analysis
+source("code/functions/eff_size_dynamics_LRR_function.R")               # Function of LRR at dynamics level
+source("code/functions/gg_aggregated_function.R")   # Function for visualization of aggregated analysis
+source("code/functions/gg_dynamics_function.R")      # Function for visualization of dynamics analysis
 
 
 k = 1    # k = 1: main variables
@@ -137,8 +137,8 @@ dyn <- do.call(rbind, list_dyn) %>%
     )
   )
 
-agg %>%   write.csv("results/effect_size_aggregated.csv")
-dyn %>%   write.csv("results/effect_size_dynamics.csv")
+#agg %>%   write.csv("results/effect_size_aggregated.csv")
+#dyn %>%   write.csv("results/effect_size_dynamics.csv")
 
 
 
@@ -304,10 +304,10 @@ print(gg_wp)
 
 
 
-ggsave("results/Figure_2.png", plot = gg_control, dpi = 600)
-ggsave("results/Figure_2.svg", plot = gg_control, dpi = 600)
-ggsave("results/Figure_3.png", plot = gg_wp, dpi = 600)
-ggsave("results/Figure_3.svg", plot = gg_wp, dpi = 600)
+#ggsave("results/Figure_2.png", plot = gg_control, dpi = 600)
+#ggsave("results/Figure_2.svg", plot = gg_control, dpi = 600)
+#ggsave("results/Figure_3.png", plot = gg_wp, dpi = 600)
+#ggsave("results/Figure_3.svg", plot = gg_wp, dpi = 600)
 
 
 
