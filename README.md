@@ -21,8 +21,8 @@ minding some exceptions.
   
 - 1.0.processing_data.R (1.R) - Contains the code to open and process data compiled in the field experiment. 
   Several subsections are found in this code: 
-      · 1.1.0.biomass_imputation_level_MICE.R (1.1.R) - The code used to generate the data opened in line 238 of 1.R. This code requires computation time. 
-      · 1.1.1.loop_reliability. R - Code to check imputation reliability of mice in 1.1.0.
+      -  1.1.0.biomass_imputation_level_MICE.R (1.1.R) - The code used to generate the data opened in line 238 of 1.R. This code requires computation time. 
+      -  1.1.1.loop_reliability. R - Code to check imputation reliability of mice in 1.1.0.
     
       
 - 1.2.biomass_imputation_level_LM.R (1.2.R) - Contains the imputation level of samplings 0, 1, 2 and 12 using linear regression models. 
