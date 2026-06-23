@@ -103,7 +103,7 @@ source("code/functions/gg_dynamics_function.R")      # Function for visualizatio
 
 
 k = 1    # k = 1: main variables
-# k = 2: biomass variables for sensitivity analysis
+         # k = 2: biomass variables for sensitivity analysis
 
 width_dynamics = 3
 
