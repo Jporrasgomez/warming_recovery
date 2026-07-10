@@ -293,22 +293,17 @@ print(ggnmds_alltreatments) # Supplementary Fig. 1
 ########### 1.2. STATISTICAL ANALYSIS: PERMANOVA ##########################
 
 adonis_sampling <- adonis2(
-  distance_matrix_sampling_bc ~ treatment,  # puedes agregar más variables si quieres
-  data = sp_wide_sampling,                 # debe tener las variables explicativas
-  permutations = 999,                      # número de permutaciones
+  distance_matrix_sampling_bc ~ treatment,  
+  data = sp_wide_sampling,                 
+  permutations = 999,                     
   method = "bray"
 )
 
-# Mostrar resultados
 print(adonis_sampling)
-# Hay un efecto significativo del tratamiento sobre la composición de especies (p = 0.001). 
-# El tratamiento explica aproximadamente el 33.7% de la variación en la composición.
+
 
 bd <- betadisper(distance_matrix_sampling_bc, sp_wide_sampling$treatment)
 anova(bd)
-# El resultado de ANOVA para las dispersiónes dentro de grupos (tratamientos) es significativo (p = 0.0004).
-# Esto significa que la variabilidad o dispersión dentro de al menos un grupo es diferente respecto a otros grupos.
-permutest(bd) 
 plot(bd)
 boxplot(bd)
 
@@ -317,12 +312,12 @@ TukeyHSD(bd)
 
 library(pairwiseAdonis)
 
-# Ejecutamos las comparaciones por pares
+
 pw_adonis <- pairwise.adonis(
-  x           = distance_matrix_sampling_bc,                 # tu matriz de distancias Hellinger–Bray
-  factors     = sp_wide_sampling$treatment,  # factor con los cuatro tratamientos
-  perm        = 999,                         # número de permutaciones
-  p.adjust.m  = "BH"                         # corrección de p por Benjamini–Hochberg
+  x           = distance_matrix_sampling_bc,                 
+  factors     = sp_wide_sampling$treatment,  
+  perm        = 999,                         
+  p.adjust.m  = "BH"                         
 )
 
 print(pw_adonis)
