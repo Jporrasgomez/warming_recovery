@@ -241,14 +241,24 @@ ggnmds_alltreatments <-
     
     
     stat_ellipse(geom = "polygon", aes(fill = treatment),
-                 alpha = 0.12, show.legend = FALSE, level = 0.68) + 
+                 alpha = 0.12, show.legend = FALSE, level = 0.95) + 
     
     geom_point(size = 2, show.legend = T) +
     
-    geom_text_repel(aes(label = sampling),
-                    max.overlaps = 8,
-                    size = 4.5,
-                    show.legend = F) +
+   # geom_text_repel(
+   #   aes(label = sampling),
+   #   max.overlaps = 8,
+   #   size = 4.5,
+   #   show.legend = F) +
+  
+  geom_text_repel(
+    aes(label = case_when(
+      sampling %in% c("0", "2", "10", "15", "20") ~ sampling, 
+      TRUE ~ NA_real_
+    )),
+    max.overlaps = 8,
+    size = 4.5,
+    show.legend = F) +
   
     geom_hline(yintercept = 0, color = "gray52", linetype = "dashed") +
     
@@ -268,7 +278,8 @@ ggnmds_alltreatments <-
     #          colour = "black",
     #          alpha = 0.5) +
    
-    scale_color_manual(values = palette_CB, labels = labels, guide = "legend") +
+    scale_color_manual(values = palette_CB, labels = c("c" = "Control", "w" = "Warmed-only", 
+                                                       "p" = "Perturbed-only", "wp" = "Combined") , guide = "legend") +
     
     scale_fill_manual(values = palette_CB, guide = "none" ) +
     
@@ -280,12 +291,13 @@ ggnmds_alltreatments <-
          x = "NMDS1", y = "NMDS2", color = " ") +
     theme1
 
-print(ggnmds_alltreatments) # Supplementary Fig. 1
+print(ggnmds_alltreatments) 
 
 }
 
 
-
+ggsave("results/Figure_2_species_composition.png", plot = ggnmds_alltreatments, dpi = 600)
+ggsave("results/Figure_2_species_composition.svg", plot = ggnmds_alltreatments, dpi = 600)
 
 
 
@@ -293,17 +305,22 @@ print(ggnmds_alltreatments) # Supplementary Fig. 1
 ########### 1.2. STATISTICAL ANALYSIS: PERMANOVA ##########################
 
 adonis_sampling <- adonis2(
-  distance_matrix_sampling_bc ~ treatment,  
-  data = sp_wide_sampling,                 
-  permutations = 999,                     
+  distance_matrix_sampling_bc ~ treatment,  # puedes agregar más variables si quieres
+  data = sp_wide_sampling,                 # debe tener las variables explicativas
+  permutations = 999,                      # número de permutaciones
   method = "bray"
 )
 
+# Mostrar resultados
 print(adonis_sampling)
-
+# Hay un efecto significativo del tratamiento sobre la composición de especies (p = 0.001). 
+# El tratamiento explica aproximadamente el 33.7% de la variación en la composición.
 
 bd <- betadisper(distance_matrix_sampling_bc, sp_wide_sampling$treatment)
 anova(bd)
+# El resultado de ANOVA para las dispersiónes dentro de grupos (tratamientos) es significativo (p = 0.0004).
+# Esto significa que la variabilidad o dispersión dentro de al menos un grupo es diferente respecto a otros grupos.
+permutest(bd) 
 plot(bd)
 boxplot(bd)
 
@@ -312,12 +329,12 @@ TukeyHSD(bd)
 
 library(pairwiseAdonis)
 
-
+# Ejecutamos las comparaciones por pares
 pw_adonis <- pairwise.adonis(
-  x           = distance_matrix_sampling_bc,                 
-  factors     = sp_wide_sampling$treatment,  
-  perm        = 999,                         
-  p.adjust.m  = "BH"                         
+  x           = distance_matrix_sampling_bc,                 # tu matriz de distancias Hellinger–Bray
+  factors     = sp_wide_sampling$treatment,  # factor con los cuatro tratamientos
+  perm        = 999,                         # número de permutaciones
+  p.adjust.m  = "BH"                         # corrección de p por Benjamini–Hochberg
 )
 
 print(pw_adonis)

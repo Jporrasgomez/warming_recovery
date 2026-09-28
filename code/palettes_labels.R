@@ -168,7 +168,7 @@ palette_RR_CB <- c("w_vs_c" = w_CB, "p_vs_c" = p_CB, "wp_vs_c" = wp_CB)
 
 palette_RR_wp <- c(wp_vs_p = "#903996", wp_vs_w = "#903996")
 
-labels_RR_wp <- c("wp_vs_w" = "Global Change vs Warming", "wp_vs_p" = "Warming effect on recovery")
+labels_RR_wp <- c("wp_vs_w" = "Global Change vs Warming", "wp_vs_p" = "Warming effect on post-disturbance dynamics")
 
 labels_RR_wp2 <- c("wp_vs_w" = "Perturbation effect", "wp_vs_p" = "Warming effect on recovery")
 labels_RR_wp3 <- c("wp_vs_w" = "Global Change vs Warming", "wp_vs_p" = "Combined vs Perturbation")
@@ -187,5 +187,13 @@ palette8 <- c("c" = "#00C4A7", "w" = "#A238A2", "p" = "#F4A300", "wp" = "#3A3A3A
 point_shapes <- c("c" = 16, "w" = 17, "p" = 15, "wp" = 18)
 
 
+
+
+palette_significance <- 
+  c("significant" = "blue", "marginal" = "orange", "non-significant" = "grey")
+shape_significance <- c(
+  "positive" = "+",  # o pch 43 / 3
+  "negative" = "-"   # o pch 45
+)
 
 
