@@ -1,7 +1,7 @@
 # warming_recovery
 
 
-R-code for the work "Experimental warming delays ecosystem recovery in grasslands"
+R-code for the work "Warming alters post-disturbance temporal dynamics of grassland plant communities"
 
 
 All data required to run this code can be found in: public repository will be indicated upon acceptance of the manuscript
