@@ -60,7 +60,7 @@ for(i in 1:length(treats)){
   # Extract NMDS sample scores
   nmds_samples <- as.data.frame(scores(nmds_res, display = "sites"))
   
-  # Extract NMDS species scores (optional)
+  # Extract NMDS species scores 
   nmds_species <- as.data.frame(scores(nmds_res, display = "species"))
   
   gglist1[[count]] <- ggplot() +
@@ -102,9 +102,9 @@ ggarrange(
 #As a rule of thumb literature has identified the following cut-off values for stress-level:
 #  
 #  Higher than 0.2 is poor (risks for false interpretation).
-#0.1 - 0.2 is fair (some distances can be misleading for interpretation).
-#0.05 - 0.1 is good (can be confident in inferences from plot).
-#Less than 0.05 is excellent (this can be rare).
+#  0.1 - 0.2 is fair (some distances can be misleading for interpretation).
+#  0.05 - 0.1 is good (can be confident in inferences from plot).
+#  Less than 0.05 is excellent (this can be rare).
 
 
 ## SORENSEN 
@@ -217,18 +217,15 @@ nmds_df_sampling <- data.frame(
 nmds_df_sampling <- nmds_df_sampling %>% arrange(sampling)
 
 
-# Species arrows visualization
-
 set.seed(123)  # reproducibility for envfit permutations
 fit <- vegan::envfit(nmds_bc_sampling, as.data.frame(abundance_list[[i]]), permutations = 999)
 
-# Extract species scores (vectors) 
 
 sp_scores <- as.data.frame(fit$vectors$arrows) %>%
   mutate(p = fit$vectors$pvals,
          R2 = fit$vectors$r,
          species = rownames(.)) %>%
-  filter(p < 0.05, R2 > 0.15) %>%    # Filter significant and high correlation scores                             
+  filter(p < 0.05, R2 > 0.15) %>%      # Filter significant and high correlation scores                             
   mutate(NMDS1 = NMDS1 * R2 * 1.5,     # Scaling arrows
          NMDS2 = NMDS2 * R2 * 1.5)     # Scaling arrows
 
@@ -296,8 +293,8 @@ print(ggnmds_alltreatments)
 }
 
 
-ggsave("results/Figure_2_species_composition.png", plot = ggnmds_alltreatments, dpi = 600)
-ggsave("results/Figure_2_species_composition.svg", plot = ggnmds_alltreatments, dpi = 600)
+#ggsave("results/Figure_2_species_composition.png", plot = ggnmds_alltreatments, dpi = 600)
+#ggsave("results/Figure_2_species_composition.svg", plot = ggnmds_alltreatments, dpi = 600)
 
 
 
@@ -305,21 +302,17 @@ ggsave("results/Figure_2_species_composition.svg", plot = ggnmds_alltreatments, 
 ########### 1.2. STATISTICAL ANALYSIS: PERMANOVA ##########################
 
 adonis_sampling <- adonis2(
-  distance_matrix_sampling_bc ~ treatment,  # puedes agregar más variables si quieres
-  data = sp_wide_sampling,                 # debe tener las variables explicativas
-  permutations = 999,                      # número de permutaciones
+  distance_matrix_sampling_bc ~ treatment,
+  data = sp_wide_sampling,                
+  permutations = 999,                      
   method = "bray"
 )
 
-# Mostrar resultados
-print(adonis_sampling)
-# Hay un efecto significativo del tratamiento sobre la composición de especies (p = 0.001). 
-# El tratamiento explica aproximadamente el 33.7% de la variación en la composición.
 
+print(adonis_sampling)
 bd <- betadisper(distance_matrix_sampling_bc, sp_wide_sampling$treatment)
 anova(bd)
-# El resultado de ANOVA para las dispersiónes dentro de grupos (tratamientos) es significativo (p = 0.0004).
-# Esto significa que la variabilidad o dispersión dentro de al menos un grupo es diferente respecto a otros grupos.
+
 permutest(bd) 
 plot(bd)
 boxplot(bd)
@@ -329,12 +322,12 @@ TukeyHSD(bd)
 
 library(pairwiseAdonis)
 
-# Ejecutamos las comparaciones por pares
+# Pairs comparisons
 pw_adonis <- pairwise.adonis(
-  x           = distance_matrix_sampling_bc,                 # tu matriz de distancias Hellinger–Bray
-  factors     = sp_wide_sampling$treatment,  # factor con los cuatro tratamientos
-  perm        = 999,                         # número de permutaciones
-  p.adjust.m  = "BH"                         # corrección de p por Benjamini–Hochberg
+  x           = distance_matrix_sampling_bc,                 
+  factors     = sp_wide_sampling$treatment,  
+  perm        = 999,                         
+  p.adjust.m  = "BH"                         
 )
 
 print(pw_adonis)

@@ -1,8 +1,8 @@
 
 
 
-rm(list = ls(all.names = TRUE))  #Se limpia el environment
-pacman::p_unload(pacman::p_loaded(), character.only = TRUE) #se quitan todos los paquetes (limpiamos R)
+rm(list = ls(all.names = TRUE))
+pacman::p_unload(pacman::p_loaded(), character.only = TRUE)
 
 pacman::p_load(dplyr, reshape2,tidyverse, lubridate, ggplot2,
                ggpubr, gridExtra, stringr, readr, nortest, patchwork)
@@ -370,12 +370,11 @@ gg_24h_diff <-
       names_to  = c("variable", ".value"),
       names_pattern = "(.*)_(mean|sd)_diff"
     ) %>% 
-    # renombramos las dos columnas que crea automáticamente: mean y sd
     rename(
       mean_diff_value = mean,
       sd_diff_value   = sd
     ) %>% 
-filter(variable == variables[i]) %>%                                       #### Modify in this line the variable or variables we want to see
+filter(variable == variables[i]) %>%                                      
   ggplot(aes(x = time, y = mean_diff_value, color = variable)) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "#1FBDC7", linewidth = 1) +
   geom_line(aes(group = variable), color = "#EA6E13", linewidth = 2) +
@@ -446,9 +445,9 @@ gg_year_diff <-
   ) +
   
   scale_x_date(
-    date_breaks  = "4 month",            # intervalos de 1 mes
-    date_labels  = "%Y-%m-%d",              # ej. "Jan 2024"
-    expand       = expansion(add = c(0, 0))  # ajusta márgenes si hace falta
+    date_breaks  = "4 month",            
+    date_labels  = "%Y-%m-%d",              
+    expand       = expansion(add = c(0, 0))  
   ) +
 
   theme1 +
@@ -465,14 +464,14 @@ gg_year_diff <-
   print(gg_boxplot_daily_average)
   
   
-  print(gg_24h_diff) # Supplementary Fig. 4
+  print(gg_24h_diff) 
   
   
   gg_year_temp <-
     (gg_allyear + gg_year_diff) +
     plot_layout(ncol = 1) + 
     plot_annotation(tag_levels = "a")
-  print(gg_year_temp) # Supplementary Fig. 5
+  print(gg_year_temp) 
   
   
   
@@ -499,7 +498,6 @@ vwc_data %>%
   labs ( x = "Soil moisture TMS-4 raw signal", y = "VWC (%)") +
   geom_smooth(method = "lm", se = FALSE) +
   
-  # primero la ecuación
   stat_regline_equation(
     mapping     = aes(label = after_stat(eq.label)),
     formula     = y ~ x,
@@ -508,7 +506,6 @@ vwc_data %>%
     size        = 5,
     show.legend = FALSE
   ) +
-  # luego el R²
   stat_regline_equation(
     mapping     = aes(label = after_stat(rr.label)),
     formula     = y ~ x,
@@ -520,9 +517,9 @@ vwc_data %>%
   
   stat_cor(
     mapping     = aes(label = after_stat(p.label)),
-    method      = "pearson",      # test de correlación Pearson
-    label.x.npc = 0.2,           # misma X para alinear
-    label.y.npc = 0.60,           # un poco más abajo
+    method      = "pearson",      
+    label.x.npc = 0.2,           
+    label.y.npc = 0.60,          
     size        = 5,
     show.legend = FALSE
   ) +
@@ -568,9 +565,9 @@ gg_vwc_vs_t <-
   
   stat_cor(
     mapping     = aes(label = after_stat(p.label)),
-    method      = "pearson",      # test de correlación Pearson
-    label.x.npc = 0.8,           # misma X para alinear
-    label.y.npc = 0.60,           # un poco más abajo
+    method      = "pearson",    
+    label.x.npc = 0.8,           
+    label.y.npc = 0.60,           
     size        = 5,
     show.legend = FALSE
   ) +

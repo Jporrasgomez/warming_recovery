@@ -222,7 +222,6 @@ sd(imput_stability_db$CV)
 
 raincloud_plot <- ggplot(imput_stability_db, aes(x = 1, y = CV)) +
   
-  # Half-violin (the "cloud")
   stat_halfeye(
     adjust = 0.5,
     width = 0.6,
@@ -232,15 +231,12 @@ raincloud_plot <- ggplot(imput_stability_db, aes(x = 1, y = CV)) +
     fill = "gray40"
   ) +
   
-  
-  # Raw data (the "rain")
   geom_jitter(
     width = 0.08,
     alpha = 0.4,
     size = 2
   ) +
-  
-  # Boxplot (the "box")
+
   geom_boxplot(
     width = 0.2,
     outlier.shape = NA,
@@ -321,8 +317,7 @@ sd(stability_test$CV)
 
 
 raincloud_plot_reliability <- ggplot(stability_test, aes(x = 1, y = CV)) +
-  
-  # Half-violin (the "cloud")
+
   stat_halfeye(
     adjust = 0.5,
     width = 0.6,
@@ -332,15 +327,12 @@ raincloud_plot_reliability <- ggplot(stability_test, aes(x = 1, y = CV)) +
     fill = "gray40"
   ) +
   
-  
-  # Raw data (the "rain")
   geom_jitter(
     width = 0.08,
     alpha = 0.4,
     size = 2
   ) +
   
-  # Boxplot (the "box")
   geom_boxplot(
     width = 0.2,
     outlier.shape = NA,
@@ -366,7 +358,7 @@ reliability_test <- read.csv("data/processed_data/reliability_test.csv") %>%
 
 reliability_LM_test <- read.csv("data/processed_data/reliability_LM_test.csv")
 
-reg_tab <- reliability_LM_test %>%                    # <-- reemplaza con tu data.frame real
+reg_tab <- reliability_LM_test %>%                  
   group_by(counter, .imp) %>%
   group_modify(~{
     dat <- .x %>%
@@ -397,7 +389,6 @@ reg_tab <- reliability_LM_test %>%                    # <-- reemplaza con tu dat
     )
   }) %>%
   ungroup() %>%
-  # Añadimos columna 'imp' (copia de .imp) y ordenamos
   mutate(
     counter_chr = as.character(counter),
     counter_num = suppressWarnings(as.numeric(counter_chr)),

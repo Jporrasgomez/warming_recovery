@@ -298,11 +298,10 @@ source("code/palettes_labels.R")
   
   gg_s0 <- 
   ggplot(RESULT0, aes(
-    x = eff_descriptor,                 # centrado en 0 + pequeño desplazamiento
+    x = eff_descriptor,               
     y = eff_value,
     color = eff_descriptor
   )) +
-    #facet_grid(rows = vars(variable), scales = "free_y", switch = "y") +
     facet_wrap(~ variable, scales = "free_y", strip.position = "top", nrow = 2) +
 
     
@@ -324,8 +323,6 @@ source("code/palettes_labels.R")
           glmm_effect_significance == "non-significant" ~ NA_character_
         )
       ),
-      
-      #vjust = 0.7,          # Ajuste vertical para centrar el '*' dentro de la figura
       show.legend = FALSE,
       size = 10
     ) +
@@ -337,7 +334,6 @@ source("code/palettes_labels.R")
     
     labs(x = NULL, y = NULL, color = NULL) +
     
-    #gg_RR_theme +
     theme(
       strip.background   = element_blank(),
       strip.placement    = "outside",
@@ -355,6 +351,6 @@ source("code/palettes_labels.R")
 }
 
 
-ggsave("results/SAMPLING_0.png", plot = gg_s0, dpi = 600)
+#ggsave("results/SAMPLING_0.png", plot = gg_s0, dpi = 600)
 #ggsave("results/SAMPLING_=.svg", plot = gg_s0, dpi = 600)  
   

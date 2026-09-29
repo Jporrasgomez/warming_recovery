@@ -2,8 +2,8 @@
 
 
 
-rm(list = ls(all.names = TRUE))  #Se limpia el environment
-pacman::p_unload(pacman::p_loaded(), character.only = TRUE) #
+rm(list = ls(all.names = TRUE))  
+pacman::p_unload(pacman::p_loaded(), character.only = TRUE) 
 
 
 pacman::p_load(dplyr,reshape2,tidyverse, lubridate) 
@@ -41,7 +41,7 @@ LRR_agg <- function(data, variable){
     group_by(plot, treatment) |> 
     summarise(plot_mean = mean(.data[[variable]]), .groups = "drop")
   
-  # Step 2: Compute true treatment-level mean, sd, and plot count (N = 4)
+  # Step 2: Compute treatment-level mean, sd, and plot count (N = 4)
   effect <- plot_level |> 
     group_by(treatment) |> 
     summarise(
@@ -158,7 +158,7 @@ LRR_agg <- function(data, variable){
     mutate(variable = variable, 
            analysis = paste0("delta_LRR")) |> 
     mutate(
-      RR = ifelse(variable == "Y_zipf", RR * -1, RR)    ## If we do not use this, we would show "Unevenness"
+      RR = ifelse(variable == "Y_zipf", RR * -1, RR)    ## If we do not use this, we would be showing "Unevenness"
     ) |> 
     mutate(
       upper_limit = RR + 1.96 * se_RR,
@@ -304,7 +304,7 @@ LRR_dynamics <- function(data, variable){
       analysis = paste0("delta_LRR")
     ) |> 
     mutate(
-      delta_RR = ifelse(variable == "Y_zipf", delta_RR * -1, delta_RR)   ## If we do not use this, we would show "Unevenness"
+      delta_RR = ifelse(variable == "Y_zipf", delta_RR * -1, delta_RR)   ## If we do not use this, we would be showing "Unevenness"
     ) |> 
     filter(delta_RR != "NaN") |> 
     mutate(variable = variable, 

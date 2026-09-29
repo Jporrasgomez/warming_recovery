@@ -121,7 +121,7 @@ sp_wide_plot %>%
   theme1 +
   theme(legend.position = "bottom")
 
-print(gg_colonizers) # Supplementary Fig. 2
+print(gg_colonizers) 
 
 
 

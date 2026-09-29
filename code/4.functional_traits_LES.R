@@ -194,12 +194,7 @@ setdiff(unique(flora_abrich$code), unique(trait_means$code))
 setdiff(unique(species_code$code), unique(trait_means$code))
 setdiff(unique(species_code$code), unique(traits$code))
 
-# I have to check on Myosotis, Sonchus and Cirsium. 
 
-#Changes that have been made: 
-# - Sonchus sp has been substituted by "asteraceae" in the flora_abrich database
-# - For the species Cirsium sp, Myosotis discolor and Cardamine sp we do not have functional traits. 
-# What can I do about Cirsium? it is one of the most abudance species at the end of the samplings. 
 
 
 
@@ -215,7 +210,7 @@ library(psych)
 
 traits_mean_wide <- trait_means %>%
   ungroup() %>%                           # Remove grouping structure
-  select(-trait_sd) %>%  # Remove unnecessary columns
+  select(-trait_sd) %>%                   # Remove unnecessary columns
   pivot_wider(
     names_from = trait_name,              # Columns will be based on trait_name levels
     values_from = trait_mean              # Values will come from trait_mean
@@ -241,7 +236,7 @@ traits_data_final <- traits_mean_wide %>%
 
 #traits_data_final %>%  write.csv("results/traits_data_final.csv")
 
-##  ---REMOVING SPECIES WITH LOW NUMBER OF TRAITS AVAILABLE---
+##  REMOVING SPECIES WITH LOW NUMBER OF TRAITS AVAILABLE 
 
 traits_mean_wide %>%
   mutate(
@@ -469,21 +464,21 @@ cwm_sampling %>%
 # Functional-trait PERMANOVA workflow on retained principal components (PCs) #
 
 # 1. Select the minimum number of PCs that together explain ≥ 80 % of variance
-# ---------------------------------------------------------------------------
-var_exp   <- (pca_sampling0$sdev^2) / sum(pca_sampling0$sdev^2)  # variance explained by each PC
-cum_var   <- cumsum(var_exp)                                     # cumulative variance curve
+
+var_exp   <- (pca_sampling0$sdev^2) / sum(pca_sampling0$sdev^2)  
+cum_var   <- cumsum(var_exp)                                     
 k_retener <- which(cum_var >= 0.80)[1]      # first index at or above 80 %
 print(k_retener)
 
 # 2. Build a scores data frame and add the treatment factor
-# ---------------------------------------------------------
-pc_scores <- as.data.frame(pca_sampling0$x[, 1:k_retener])       # PC coordinates for each sample
-pc_scores$treatment <- cwm_sampling$treatment                    # metadata: treatment as factor
+
+pc_scores <- as.data.frame(pca_sampling0$x[, 1:k_retener])       
+pc_scores$treatment <- cwm_sampling$treatment                    
 
 # 3. PERMANOVA on a Euclidean distance matrix of the retained PCs
-# ---------------------------------------------------------------
-dist_pc <- vegan::vegdist(pc_scores[, 1:k_retener], method = "euclidean")  # distance matrix
-adonis_pc <- adonis2(                                                      # permutation MANOVA
+
+dist_pc <- vegan::vegdist(pc_scores[, 1:k_retener], method = "euclidean")  
+adonis_pc <- adonis2(                                                     
   dist_pc ~ treatment,
   data         = pc_scores,
   permutations = 999,
@@ -492,13 +487,13 @@ adonis_pc <- adonis2(                                                      # per
 print(adonis_pc)  # F-ratio, R² and p-value for the treatment effect
 
 # 4. Test homogeneity of dispersions (beta diversity) among treatments
-# --------------------------------------------------------------------
-bd_pc <- betadisper(dist_pc, pc_scores$treatment)  # distances to group centroids
-anova(bd_pc)                                       # permutational ANOVA for dispersion
-TukeyHSD(bd_pc)                                    # pairwise dispersion differences
+
+bd_pc <- betadisper(dist_pc, pc_scores$treatment)
+anova(bd_pc)                                       
+TukeyHSD(bd_pc)                                 
 
 # 5. Pairwise PERMANOVA contrasts with Benjamini–Hochberg p-adjustment
-# --------------------------------------------------------------------
+
 library(pairwiseAdonis)
 pw_pc <- pairwise.adonis(
   dist_pc,

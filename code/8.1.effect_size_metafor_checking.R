@@ -2,12 +2,12 @@
 
 
 
-rm(list = ls(all.names = TRUE))  #Se limpia el environment
-pacman::p_unload(pacman::p_loaded(), character.only = TRUE) #se quitan todos los paquetes (limpiamos R)
+rm(list = ls(all.names = TRUE))  
+pacman::p_unload(pacman::p_loaded(), character.only = TRUE) 
 
 
 pacman::p_load(dplyr,reshape2,tidyverse, lubridate, ggplot2, ggpubr, gridExtra,
-               car, ggsignif, dunn.test, rstatix, ggbreak, effsize) #Cargamos los paquetes que necesitamos
+               car, ggsignif, dunn.test, rstatix, ggbreak, effsize) 
 
 source("code/palettes_labels.R")
 
@@ -95,10 +95,10 @@ rr_es_df <- as.data.frame(rr_es)
 
 
 
-  forest(x = rr_es_df$yi,   # Los valores de los tamaños de efecto
-       sei = sqrt(rr_es_df$vi),  # Error estándar (raíz cuadrada de la varianza)
-       slab = rr_es_df$treatment,   # Etiquetas de los tratamientos
-       xlab = paste0("Effect size (ROM)", " - ",variables[i]))   # Etiqueta del eje X
+  forest(x = rr_es_df$yi,   
+       sei = sqrt(rr_es_df$vi),  
+       slab = rr_es_df$treatment,   
+       xlab = paste0("Effect size (ROM)", " - ",variables[i]))   
 
 
 }
@@ -123,7 +123,6 @@ for(i in seq_along(variables)){
       .groups = "drop"
     )
   
-  # Comparación específica: WP vs P (P como referencia)
   rr_data <- data %>%
     filter(treatment == "wp") %>%
     mutate(
@@ -133,7 +132,6 @@ for(i in seq_along(variables)){
     ) %>%
     rename(mean_t = mean_variable, sd_t = sd_variable, n_t = n)
   
-  # Cálculo del Log Response Ratio (ROM)
   rr_es <- escalc(measure = "ROM",
                   m1i = mean_t, sd1i = sd_t, n1i = n_t,
                   m2i = mean_c, sd2i = sd_c, n2i = n_c,
@@ -143,7 +141,6 @@ for(i in seq_along(variables)){
   
   rr_es_df <- as.data.frame(rr_es)
   
-  # Representación gráfica
   forest(x = rr_es_df$yi,
          sei = sqrt(rr_es_df$vi),
          slab = paste0(rr_es_df$treatment, " vs P"),

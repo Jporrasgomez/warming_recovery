@@ -5,8 +5,8 @@
 
 
 
-rm(list = ls(all.names = TRUE))  #Se limpia el environment
-pacman::p_unload(pacman::p_loaded(), character.only = TRUE) #
+rm(list = ls(all.names = TRUE))  
+pacman::p_unload(pacman::p_loaded(), character.only = TRUE) 
 
 
 pacman::p_load(dplyr,reshape2,tidyverse, lubridate, ggplot2, ggpubr, gridExtra,

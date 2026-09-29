@@ -14,7 +14,6 @@ source("code/palettes_labels.R")
 biomass_data_all <-   read.csv("data/processed_data/biomass_data_Z.csv") |> select(-X) |> 
   mutate(
     date      = ymd(date),
-    sampling_num = as.numeric(as.character(sampling)), # Necesario para splines en GAM
     sampling = factor(sampling, levels = as.character(sort(unique(as.numeric(as.character(sampling)))))),
     sampling_f = numFactor(sampling_num),
     plot      = factor(plot),
@@ -22,7 +21,7 @@ biomass_data_all <-   read.csv("data/processed_data/biomass_data_Z.csv") |> sele
   ) %>%
   filter(sampling != "0",
          sampling != "1") |> 
-  arrange(plot, sampling)  # Necessary for autocorrelation in models
+  arrange(plot, sampling)  
 
 
 

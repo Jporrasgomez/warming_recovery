@@ -72,7 +72,7 @@ for (i in c(1:100)){
     group_by(.imp) %>%   # Group by imputation number
     do({
       model <- lm(nind_m2 ~ nind_m2_original, data = .)  # Fit model
-      stats <- glance(model) %>% select(r.squared, p.value)  # Extract R² and p-value
+      stats <- glance(model) %>% select(r.squared, p.value)  # Extract R2 and p-value
       stats$.imp <- unique(.$.imp)  # Add imputation number
       stats
     }) %>% 

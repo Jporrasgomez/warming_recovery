@@ -40,7 +40,7 @@ fit_one <- function(df) {
   m <- lm(biomass ~ abundance, data = df)
   tibble(
     R2        = summary(m)$r.squared,
-    `p-value` = glance(m)$p.value,                 # global p-value  
+    `p-value` = glance(m)$p.value,                 
     slope     = coef(m)[["abundance"]],
     intercept = coef(m)[["(Intercept)"]]
   )
