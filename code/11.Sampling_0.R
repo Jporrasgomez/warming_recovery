@@ -142,7 +142,7 @@ source("code/palettes_labels.R")
   em_time_leafN <- emmeans(glmm_leafN, ~ treatment | sampling, type = "response")
   
   ### BIOMASS ###
-  glmm_biomass <- glmmTMB(biomass_mice_lm ~ treatment * sampling + mean_vwc + (1 | plot),
+  glmm_biomass <- glmmTMB(biomass_mice_lm ~ treatment * sampling +  (1 | plot),
                           dispformula = ~treatment + sampling, 
                           data = arkaute_biomass, family = Gamma(link = "log"))
   #diagnose_glmm(glmm_biomass)
@@ -151,7 +151,7 @@ source("code/palettes_labels.R")
   
   ## BIOMASS - just MICE ####
   
-  glmm_biomass_mice <- glmmTMB(biomass_mice ~ treatment * sampling + mean_vwc +  (1 | plot),
+  glmm_biomass_mice <- glmmTMB(biomass_mice ~ treatment * sampling + (1 | plot),
                                dispformula = ~treatment + sampling, 
                                data = arkaute_biomass_mice,  family = Gamma(link = "log"))
   #diagnose_glmm(glmm_biomass_mice)
@@ -298,10 +298,11 @@ source("code/palettes_labels.R")
   
   gg_s0 <- 
   ggplot(RESULT0, aes(
-    x = eff_descriptor,               
+    x = eff_descriptor,                 # centrado en 0 + pequeño desplazamiento
     y = eff_value,
     color = eff_descriptor
   )) +
+    #facet_grid(rows = vars(variable), scales = "free_y", switch = "y") +
     facet_wrap(~ variable, scales = "free_y", strip.position = "top", nrow = 2) +
 
     
@@ -323,6 +324,8 @@ source("code/palettes_labels.R")
           glmm_effect_significance == "non-significant" ~ NA_character_
         )
       ),
+      
+      #vjust = 0.7,          # Ajuste vertical para centrar el '*' dentro de la figura
       show.legend = FALSE,
       size = 10
     ) +
@@ -334,6 +337,7 @@ source("code/palettes_labels.R")
     
     labs(x = NULL, y = NULL, color = NULL) +
     
+    #gg_RR_theme +
     theme(
       strip.background   = element_blank(),
       strip.placement    = "outside",
@@ -346,10 +350,10 @@ source("code/palettes_labels.R")
       legend.text        = element_text(size = 14, face = "plain")
     )
   
-  print(gg_s0)
   
 }
 
+print(gg_s0)
 
 #ggsave("results/SAMPLING_0.png", plot = gg_s0, dpi = 600)
 #ggsave("results/SAMPLING_=.svg", plot = gg_s0, dpi = 600)  

@@ -194,7 +194,12 @@ setdiff(unique(flora_abrich$code), unique(trait_means$code))
 setdiff(unique(species_code$code), unique(trait_means$code))
 setdiff(unique(species_code$code), unique(traits$code))
 
+# I have to check on Myosotis, Sonchus and Cirsium. 
 
+#Changes that have been made: 
+# - Sonchus sp has been substituted by "asteraceae" in the flora_abrich database
+# - For the species Cirsium sp, Myosotis discolor and Cardamine sp we do not have functional traits. 
+# What can I do about Cirsium? it is one of the most abudance species at the end of the samplings. 
 
 
 
@@ -210,7 +215,7 @@ library(psych)
 
 traits_mean_wide <- trait_means %>%
   ungroup() %>%                           # Remove grouping structure
-  select(-trait_sd) %>%                   # Remove unnecessary columns
+  select(-trait_sd) %>%  # Remove unnecessary columns
   pivot_wider(
     names_from = trait_name,              # Columns will be based on trait_name levels
     values_from = trait_mean              # Values will come from trait_mean
@@ -236,7 +241,7 @@ traits_data_final <- traits_mean_wide %>%
 
 #traits_data_final %>%  write.csv("results/traits_data_final.csv")
 
-##  REMOVING SPECIES WITH LOW NUMBER OF TRAITS AVAILABLE 
+##  ---REMOVING SPECIES WITH LOW NUMBER OF TRAITS AVAILABLE---
 
 traits_mean_wide %>%
   mutate(
@@ -320,12 +325,7 @@ traits_matrix <- traits_matrix %>%
 
 
 
-### ABUNDANCE MATRIX 
-
-# We will prepare 2 abundance matrix: 1) for abundance at plot level
-#                                     2) for abundance at sampling level. This is: mean abundance of each species per treatment and sampling
-
-# Common step for both abudance matrix: 
+### ABUNDANCE MATRIX #####
 
 flora_abrich <- flora_abrich %>% 
   filter(!code %in% c("cisp", "casp", "mydi",  #Deleting the species for which we do not have traits
@@ -334,184 +334,7 @@ flora_abrich <- flora_abrich %>%
 
 
 
-
-#Abundance matrix 1: sampling level
-
-
-abundance_matrix_sampling <- flora_abrich %>% 
-  ungroup() %>% 
-  select(sampling, date, treatment, plot, abundance_s, code) %>% 
-  mutate(
-    abundance_s = abundance_s / 100
-  ) %>% 
-  group_by(treatment, sampling, code) %>% 
-  summarize(mean_abundance = mean(abundance_s, na.rm = TRUE), .groups = "drop") %>% 
-  mutate(
-    com = paste(sampling, treatment, sep = "/")
-  ) %>% 
-  select(com, mean_abundance, code) %>% 
-  pivot_wider(
-    names_from = code, 
-    values_from = mean_abundance) %>%
-  select(com, sort(setdiff(names(.), "com"))) %>%
-  column_to_rownames("com") %>% 
-  mutate(across(everything(), ~ replace_na(., 0))) %>%  # NA = 0 
-  as.data.frame() 
-
-
-cwm_sampling <- functcomp(as.matrix(traits_matrix), as.matrix(abundance_matrix_sampling))
-cwm_sampling$com <- rownames(cwm_sampling); rownames(cwm_sampling) <- NULL
-
-cwm_sampling <- cwm_sampling %>% 
-  mutate(
-    sampling = sapply(strsplit(com, "/"), function(x) x[1]),
-    treatment = sapply(strsplit(com, "/"), function(x) x[2]),
-  ) %>% 
-  select(-com)
-
-
-library(factoextra)
-
-cwm_sampling %>% 
-  select(-treatment, - sampling) %>% 
-  prcomp(center = T, scale. = T) %>% 
-  fviz_pca_biplot(geom = "point", repel = T, title = " ",
-                  ggthem = theme_test())
-
-
-{
-  # PCA on CWM data (excluding metadata columns)
-  pca_sampling0 <- cwm_sampling %>%
-    select(-sampling, -treatment) %>%
-    prcomp(center = TRUE, scale. = TRUE)
-  
-  # Individual coordinates (scores) + treatment info
-  pca_sampling <- as.data.frame(pca_sampling0$x)
-  pca_sampling$treatment <- cwm_sampling$treatment
-  
-  # Loadings (trait vectors)
-  loadings_df <- as.data.frame(pca_sampling0$rotation)
-  loadings_df$trait <- rownames(loadings_df)
-  loadings_df <- loadings_df %>%
-    mutate(PC1 = PC1 * 4, PC2 = PC2 * 4)  # scale factor can be adjusted (lenth of arrows)
-  
-  loadings_df <- loadings_df %>%
-    mutate(trait = recode(trait,
-                          "leafN"     = "Leaf-Nitrogen",
-                          "seed.mass" = "Seed mass",
-                          "vegetation.height" = "Height"
-    ))
-  # Explained variance
-  eig_values <- pca_sampling0$sdev^2
-  var_explained <- round(100 * eig_values / sum(eig_values), 1)
-  
-  # Final PCA plot
-  # Añade la columna de sampling
-  pca_sampling$sampling <- cwm_sampling$sampling
-  
-  }
-  
-  # Gráfico PCA final con numeración y líneas
-  gg_cwm_sampling <- 
-    ggplot(pca_sampling, aes(x = PC1, y = PC2, color = treatment)) +
-    geom_path(aes(group = treatment), linewidth = 0.5, alpha = 0.2) +  # Conecta puntos del mismo tratamiento
-    geom_point(size = 2) +
-    geom_text_repel(aes(label = sampling, color = treatment),
-                    size = 4.5,
-                    max.overlaps = Inf,
-                    show.legend = F)  +  # Números de sampling
-    stat_ellipse(aes(fill = treatment, color = treatment),
-                 alpha = 0.12,
-                 geom = "polygon",
-                 level = 0.68,
-                 type = "norm",
-                 linewidth = 0.6, 
-                 show.legend = F) +
-    geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
-    
-    geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
-    
-    geom_segment(data = loadings_df,
-                 aes(x = 0, y = 0, xend = PC1, yend = PC2),
-                 inherit.aes = FALSE,
-                 arrow = arrow(length = unit(0.3, "cm")),
-                 color = "gray30") +
-    geom_text_repel(data = loadings_df,
-                    aes(x = PC1, y = PC2, label = trait),
-                    inherit.aes = FALSE,
-                    color = "gray30",
-                    max.overlaps = Inf) +
-    
-    scale_color_manual(values = palette_CB, labels = labels1) +
-    
-    scale_fill_manual(values = palette_CB) +
-    
-    #scale_shape_manual(values = point_shapes, labels = labels1) +
-    
-    labs(x = paste0("PC1 (", var_explained[1], "%)"),
-         y = paste0("PC2 (", var_explained[2], "%)"),
-         #title = "CWM differences at sampling level"
-    ) +
-    guides(color = guide_legend(title = NULL),
-           shape = guide_legend(title = NULL),
-           fill = "none") +
-    #theme_test() +
-    theme1
-  print(gg_cwm_sampling) # Supplementary Fig. 7
-  
-
-
-# Functional-trait PERMANOVA workflow on retained principal components (PCs) #
-
-# 1. Select the minimum number of PCs that together explain ≥ 80 % of variance
-
-var_exp   <- (pca_sampling0$sdev^2) / sum(pca_sampling0$sdev^2)  
-cum_var   <- cumsum(var_exp)                                     
-k_retener <- which(cum_var >= 0.80)[1]      # first index at or above 80 %
-print(k_retener)
-
-# 2. Build a scores data frame and add the treatment factor
-
-pc_scores <- as.data.frame(pca_sampling0$x[, 1:k_retener])       
-pc_scores$treatment <- cwm_sampling$treatment                    
-
-# 3. PERMANOVA on a Euclidean distance matrix of the retained PCs
-
-dist_pc <- vegan::vegdist(pc_scores[, 1:k_retener], method = "euclidean")  
-adonis_pc <- adonis2(                                                     
-  dist_pc ~ treatment,
-  data         = pc_scores,
-  permutations = 999,
-  method       = "euclidean"
-)
-print(adonis_pc)  # F-ratio, R² and p-value for the treatment effect
-
-# 4. Test homogeneity of dispersions (beta diversity) among treatments
-
-bd_pc <- betadisper(dist_pc, pc_scores$treatment)
-anova(bd_pc)                                       
-TukeyHSD(bd_pc)                                 
-
-# 5. Pairwise PERMANOVA contrasts with Benjamini–Hochberg p-adjustment
-
-library(pairwiseAdonis)
-pw_pc <- pairwise.adonis(
-  dist_pc,
-  factors    = pc_scores$treatment,
-  perm       = 999,
-  p.adjust.m = "BH"       # controls false-discovery rate
-)
-print(pw_pc) 
-
-
-
-
-
-
-
-
-
-########### CWM WITH ABUNDANCE VALUES AT PLOT LEVEL FOR RESPONSE RATIO ANALYSIS
+########### COMMUNITY WEIGHTED MEAN (CWM) ############
 # Abundance matrix 2: plot level (dynamics)
 
 abundance_matrix_dynamics <- flora_abrich %>% 
@@ -565,6 +388,8 @@ sampling_dates <- read.csv("data/sampling_dates.csv") %>%
 
 cwm_plot_db <- cwm_plot %>% 
   merge(sampling_dates)
+
+# Storing results for GLMM and LRR results
 
 cwm_plot_db %>%  write.csv("data/processed_data/cwm_plot_db.csv")
 

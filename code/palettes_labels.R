@@ -176,6 +176,13 @@ labels_RR_wp3 <- c("wp_vs_w" = "Global Change vs Warming", "wp_vs_p" = "Combined
 
 
 
+palette3 <- c("c" = "#1F8A8C", "w" = "#D93232", "p" = "#F4A300", "wp" = "#3A3A3A")
+
+
+palette8 <- c("c" = "#00C4A7", "w" = "#A238A2", "p" = "#F4A300", "wp" = "#3A3A3A")
+
+
+
 
 point_shapes <- c("c" = 16, "w" = 17, "p" = 15, "wp" = 18)
 
@@ -184,9 +191,22 @@ point_shapes <- c("c" = 16, "w" = 17, "p" = 15, "wp" = 18)
 
 palette_significance <- 
   c("significant" = "blue", "marginal" = "orange", "non-significant" = "grey")
+
+palette_significance2 <- 
+  c("p < 0.05" = "blue", "0.05 <= p < 0.10" = "orange", "Non-significant" = "grey")
+
+
 shape_significance <- c(
   "positive" = "+",  # o pch 43 / 3
   "negative" = "-"   # o pch 45
 )
+
+
+
+shape_values <- c("suppression_by_warming" = 25, "enhancement_by_warming" = 24)
+shape_labels <-  c("suppression_by_warming" = "Suppression by warming",
+                   "enhancement_by_warming" = "Enhancement by warming")
+
+
 
 

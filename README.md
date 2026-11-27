@@ -1,7 +1,7 @@
 # warming_recovery
 
 
-R-code for the work "Warming alters post-disturbance temporal dynamics of grassland plant communities"
+R-code for the work "Warming alters post-disturbance dynamics of grassland plant communities: implications for restoration"
 
 
 All data required to run this code can be found in: public repository will be indicated upon acceptance of the manuscript
@@ -10,7 +10,7 @@ All data required to run this code can be found in: public repository will be in
 Empty folders (data, data>processed_data and code) are included to enhance code running. 
 
 
-The code is structured with sections from 0 to 13. They are intended to be run subsequently, 
+The code is structured with sections from 0 to 14. They are intended to be run subsequently, 
 minding some exceptions. 
 
 
@@ -31,7 +31,7 @@ minding some exceptions.
 
 - 3.1.species_composition_new_species.R (3.1.R) - Code focused on sub-analysis of colonizers in perturbation and combined treatments.
 
-- 4.functional_traits_LES.R (4.R) - Code for functional traits data analysis, CWM estimation and visualization. 
+- 4.functional_traits_LES.R (4.R) - Code for functional traits data analysis and CWM estimation 
 
 - 5.merging_database.R (5.R) - Processed data generated in 0.R, 1.R, 1.2.R, 2.R and 4.R is merged into a single database for effect size analysis
 
@@ -44,7 +44,7 @@ minding some exceptions.
 
 - 9.LRR_vs_GLMM_results_visualization - Some plots to visualize the consistency between GLMM and LRR results
 
-- 10.Main_Results_Visualization - Joininf GLMM and LRR results to be plot for main Figures (Figures 2 and 4). Here we use the functions stored in the folder 
+- 10.Main_Results_Visualization - Joininf GLMM and LRR results to be plot for main Figures (Figures 2 and 3). Here we use the functions stored in the folder 
   "functions". 
 
 - 11.Sampling_0 - Analysis for sampling 0 (The sampling before perturbation were applied)
@@ -53,7 +53,10 @@ minding some exceptions.
       
 - 13.0.sensitivity_analysis_Z_biomass.R - Code to perform sensitivity analysis of Z coefficient (2/3) used in allometric equation of 
   biomass and its interaction with imputation levels in 1.1.R and 1.2.R.
-  - 13.1.GLMM_biomass_Z_sensitivity - Choosing the best GLMMs for biomass iterations. 
+  
+- 14.0.interaction_analysis_TILLING_OTC.R - Code to perform interaction factor analysis of OTC presence (Warmend/Ambient) and TILLING application
+  (Disturbed/Undisturbed) and time (response ~ OTC * TILLING * sampling + (1 | plot)) This analysis allow us to understand differential effect
+  of warmin over disturbed and intact communities (Figure 4)
 
 - palettes_labels.R - Code where objects for visualization colors and labels are created to ensure visual consistency.
 

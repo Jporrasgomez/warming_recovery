@@ -266,7 +266,7 @@ ar_test(m0_biomass, arkaute_biomass)
 m1_biomass <- glmmTMB(biomass_mice_lm ~ treatment * sampling + (1 | plot),
                       dispformula = ~treatment + sampling, 
                       data = arkaute_biomass, family = Gamma(link = "log"))
-AIC(m1_biomass)
+AIC(m1_biomass) # We will use this structure to maintain parsimony across models
 diagnose_glmm(m1_biomass)
 ar_test(m1_biomass, arkaute_biomass)
 
@@ -295,7 +295,7 @@ ar_test(m0_biomass_mice, arkaute_biomass_mice)
 m1_biomass_mice <- glmmTMB(biomass_mice ~ treatment * sampling + (1 | plot),
                            dispformula = ~treatment + sampling, 
                            data = arkaute_biomass_mice,  family = Gamma(link = "log"))
-AIC(m1_biomass_mice) 
+AIC(m1_biomass_mice) # We will use this structure to maintain parsimony across models
 diagnose_glmm(m1_biomass_mice)
 ar_test(m1_biomass_mice, arkaute_biomass_mice)
 
